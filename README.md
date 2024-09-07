@@ -22,7 +22,7 @@
 `DB_PASSWORD=your_database_password`
 `DB_HOST=your_database_host`
  in .env file
-
+   and create a db in your mysql `your_database_name`
  4. ```nodemon index.js```
 
 
