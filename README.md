@@ -15,17 +15,20 @@
   ```
 
 3. 
+##create a .env file and add the following
 
-DB_NAME=your_database_name
-DB_USER=your_database_user
-DB_PASSWORD=your_database_password
-DB_HOST=your_database_host
+`DB_NAME=your_database_name`
+`DB_USER=your_database_user`
+`DB_PASSWORD=your_database_password`
+`DB_HOST=your_database_host`
  in .env file
 
  4. ```nodemon index.js```
 
 
  ### FRONTEND
+ 
+
  1. ```npm install```
  2.``` npm un dev```
  
