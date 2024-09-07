@@ -7,5 +7,22 @@
 1. The backend server runs on **localhost:8000** by default.
 2. Make sure to manually install all the necessary modules in different folders. You can do this by running:
    ```bash
-   npm install
+   npm install ```
+3. 
+
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
+DB_HOST=your_database_host
+ in .env file
+
+ 4. ```nodemon index.js```
+
+
+ ### FRONTEND
+ 1. ```npm install```
+ 2.``` npm un dev```
+ 
+
    
+
