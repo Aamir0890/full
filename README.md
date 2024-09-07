@@ -8,10 +8,11 @@
 
 2. Make sure to manually install all the necessary modules in different folders. You can do this by running:
  ```bash
- cd backend ```
- 
-   ```bash
-   npm install ```
+  cd backend 
+  
+  npm install 
+  
+  ```
 
 3. 
 
