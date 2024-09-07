@@ -12,5 +12,12 @@ db.models = {};
 
 
 db.models.User = require('./user')(sequelize, Sequelize.DataTypes);
+db.models.Friends=require('./friends')(sequelize,Sequelize.DataTypes);
+
+Object.keys(db.models).forEach(modelName => {
+    if (db.models[modelName].associate) {
+        db.models[modelName].associate(db.models);
+    }
+});
 
 module.exports = db;

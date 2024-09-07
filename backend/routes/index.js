@@ -13,4 +13,8 @@ router.delete('/users/:username', userController.deleteUser);
 
 router.get('/users/sort', userController.sortUsers);
 
+
+router.post('/friends/:username',userController.createFriends);
+
+
 module.exports = router;

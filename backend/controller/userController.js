@@ -12,7 +12,7 @@ exports.createUser = async (req, res) => {
       res.status(500).json({ error: 'Failed to create user' });
     }
   };
-
+   
   exports.updateUser = async (req, res) => {
     try {
       const { username } = req.params; 
@@ -61,3 +61,18 @@ exports.createUser = async (req, res) => {
       res.status(500).json({ error: 'Failed to sort users' });
     }
   };
+
+
+  exports.createFriends = async (req, res) => {
+    try {
+      const { username } = req.params; 
+      
+      const user = await userService.processFriends(username);
+    
+      res.status(200).json(user);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      res.status(500).json({ error: 'Failed to create user' });
+    }
+  };
+

@@ -118,6 +118,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true
       },
+      
       created_at: {
         type: DataTypes.DATE,
         allowNull: true
@@ -128,9 +129,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     }, {
       tableName: 'Users',
-      timestamps: false
+      timestamps: false,
+      
     });
-  
+    User.associate = (models) => {
+      User.hasOne(models.Friends, { foreignKey: 'username', sourceKey: 'login', as: 'friends' });
+    };
+    
+
     return User;
   };
   

@@ -1,5 +1,6 @@
-const {models:{User}}=require('../models');
 
+const {models:{User}}=require('../models');
+const {models:{Friends}}=require('../models')
 
 exports.createUser=async(userData)=>{
 
@@ -7,9 +8,12 @@ exports.createUser=async(userData)=>{
 
 }
 
+exports.getUser=async(data)=>{
+  return await User.findOne({where:{login:data}})
+}
 
 exports.updateUser = async (userName, updatedData) => {
-    const user = await User.findOne({where:{userName}});
+    const user = await User.findOne({where:{login:userName}});
     if (user) {
       return await user.update(updatedData);
     }
@@ -17,7 +21,6 @@ exports.updateUser = async (userName, updatedData) => {
   };
 
   
-
 exports.getUserByUserName=async(username)=>{
  
     const user= await User.findOne({ where: { login:username } });
@@ -26,9 +29,9 @@ exports.getUserByUserName=async(username)=>{
   }
 
 
-  exports.getUsersSortedByField = async (field, order = 'ASC') => {
+  exports.getUsersSortedByField = async (field) => {
     try {
-      
+      const order='ASC'
       const validFields = ['public_repos', 'public_gists', 'followers', 'following', 'created_at'];
       if (!validFields.includes(field)) {
         throw new Error('Invalid field for sorting.');
@@ -40,7 +43,7 @@ exports.getUserByUserName=async(username)=>{
         throw new Error('Invalid order specified.');
       }
   
-    
+        
       const users = await User.findAll({
         order: [[field, order.toUpperCase()]]
       });
@@ -60,3 +63,31 @@ exports.getUserByUserName=async(username)=>{
   }
   throw new Error('User not found');
   }
+
+
+  exports.getFriends = async (userName) => {
+    try {
+      const user = await Friends.findOne({ where: { username: userName } });
+      return user ? user.friendUsernames : null;
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+      throw error;
+    }
+  };
+
+
+  exports.createOrUpdateFriends = async (userName, mutualFriends) => {
+    try {
+      const [friendsEntry, created] = await Friends.upsert({
+        username: userName,
+        friendUsernames: mutualFriends
+      }, { returning: true });
+      
+      console.log(`Friends entry ${created ? 'created' : 'updated'} for user ${userName}`);
+      
+      return friendsEntry;
+    } catch (error) {
+      console.error('Error creating/updating friends entry:', error);
+      throw error;
+    }
+  };

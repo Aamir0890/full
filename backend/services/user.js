@@ -75,3 +75,61 @@ exports.deleteUser=async(username)=>{
 exports.sortUsers=async(data)=>{
     return await userRepository.getUsersSortedByField(data);
 }
+
+
+exports.processFriends = async (userName) => {
+  try {
+    
+    const existingFriends = await userRepository.getFriends(userName);
+    
+    if (existingFriends && existingFriends.length > 0) {
+      console.log(`Friends list for ${userName} already exists in the database.`);
+      return { username: userName, friendUsernames: existingFriends };
+    }
+
+    
+    let user = await userRepository.getUser(userName);
+    
+   
+    if (!user) {
+      console.log(`User ${userName} not found in database. Fetching from GitHub API.`);
+      try {
+        const userResponse = await axios.get(`https://api.github.com/users/${userName}`);
+        user = userResponse.data;
+       
+      } catch (apiError) {
+        console.error('Error fetching user data from GitHub API:', apiError);
+        throw new Error(`User ${userName} not found in database or GitHub`);
+      }
+    }
+
+   
+    let mutualFriends = [];
+    if (user && user.followers_url) {
+      try {
+        const followersResponse = await axios.get(user.followers_url);
+        const followers = followersResponse.data.map(follower => follower.login);
+
+        const followingUrl = user.following_url.replace('{/other_user}', '');
+        const followingResponse = await axios.get(followingUrl);
+        const following = followingResponse.data.map(follow => follow.login);
+        
+        mutualFriends = followers.filter(follower => following.includes(follower));
+        console.log(mutualFriends)
+      } catch (apiError) {
+        console.error('Error fetching follower data from GitHub API:', apiError);
+        
+      }
+    } else {
+      console.log(`Unable to fetch follower data for ${userName}.`);
+    }
+
+    // Create or update friends in the database
+    const friendsEntry = await userRepository.createOrUpdateFriends(userName, mutualFriends);
+
+    return friendsEntry;
+  } catch (error) {
+    console.error('Error processing friends:', error);
+    throw error;
+  }
+};
