@@ -16,16 +16,23 @@ const UserPage = () => {
         try {
           if (!users[username]) {
             const userResponse = await axios.post(`http://localhost:8000/api/users/${username}`);
-            console.log(userResponse.data)
-            const userData =  userResponse.data;
+            console.log(userResponse.data);
+            const userData = userResponse.data;
             addUser(username, userData);
-          }
-
-          if (!repos[username]) {
-            const reposResponse = await axios.get()
-            const reposData = await reposResponse.json();
+          
+            // Fetch repos using the repos_url from userData (not users[username])
+            if (!repos[username] && userData.repos_url) {
+              const reposResponse = await axios.get(userData.repos_url); // Use userData.repos_url here
+              const reposData = reposResponse.data; // You don't need .json() with axios, it automatically parses JSON
+              addRepos(username, reposData);
+            }
+          } else if (!repos[username]) {
+            // This branch handles the case where the user exists but repos are not yet fetched
+            const reposResponse = await axios.get(users[username].repos_url); // If users[username] exists, use repos_url from it
+            const reposData = reposResponse.data;
             addRepos(username, reposData);
           }
+          
         } catch (error) {
           console.error('Error fetching data:', error);
         }
