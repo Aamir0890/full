@@ -30,7 +30,7 @@
  
 
  1. ```npm install```
- 2.``` npm un dev```
+ 2.``` npm run dev```
  
 
    
